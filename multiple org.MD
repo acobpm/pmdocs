@@ -358,10 +358,9 @@ the version can be checked in package.json in bna zip file.
 composer network start -c PeerAdmin@byfn-network-org1 -n trade-network -V 0.2.3-deploy.0 endorsementPolicyFile=~/project/setup/composer/endorsement-policy.json -A alice -C alice/admin-pub.pem -A bob -C bob/admin-pub.pem
 ```
 
-8. create and import card 
+8. create and import card for Org1:
 
-For Org1:
-Alice
+Add Alice (Admin)
 ```
 composer card create -p ~/project/setup/composer/org1/byfn-network-org1.json -u alice -n trade-network -c alice/admin-pub.pem -k alice/admin-priv.pem
 
@@ -379,6 +378,29 @@ composer identity issue -c alice@trade-network -f jo.card -u jdoe -a "resource:o
 composer card import -f jo.card
 
 composer network ping -c jdoe@trade-network
+```
+9. create and import card for Org2:
+
+Add Bob (Admin)
+```
+composer card create -p  ~/project/setup/composer/org2/byfn-network-org2.json -u bob -n trade-network -c bob/admin-pub.pem -k bob/admin-priv.pem
+
+composer card import -f bob@trade-network.card
+
+composer network ping -c bob@trade-network
+```
+
+Add Dave Lowe (paticipant)
+
+```
+composer participant add -c bob@trade-network -d '{"$class":"org.acme.trading.Trader","tradeId":"trader2-org2", "firstName":"Dave","lastName":"Lowe"}'
+
+composer identity issue -c bob@trade-network -f dave.card -u dlowe -a "resource:org.acme.trading.Trader#trader2-org2"
+
+composer card import -f dave.card
+
+composer network ping -c dlowe@trade-network
+
 ```
 
 
