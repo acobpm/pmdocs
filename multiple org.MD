@@ -24,12 +24,12 @@ cd first-network
 
 1.5 delete any 'old' business network cards that may exist in your wallet from previous Fabric environments. It is safe to ignore any errors that state that the business network cards cannot be found:
 ```
-composer card delete -n PeerAdmin@byfn-network-org1
-composer card delete -n PeerAdmin@byfn-network-org2
-composer card delete -n alice@trade-network
-composer card delete -n bob@trade-network
-composer card delete -n admin@trade-network
-composer card delete -n PeerAdmin@fabric-network
+composer card delete -c PeerAdmin@byfn-network-org1
+composer card delete -c PeerAdmin@byfn-network-org2
+composer card delete -c alice@trade-network
+composer card delete -c bob@trade-network
+composer card delete -c admin@trade-network
+composer card delete -c PeerAdmin@fabric-network
 ```
 1.6 delete your file system card store in your HOME directory as follows:
 ```
@@ -254,8 +254,13 @@ cd ~/fabric-tools/fabric-samples/first-network
 ```
 
 4.1 execute following for ORG1
+
+delete existing sk file first.
+
 ```
 export ORG1=crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+
+rm  ~/project/setup/composer/org1/*_sk
 
 cp -p $ORG1/signcerts/A*.pem ~/project/setup/composer/org1
 
@@ -266,8 +271,136 @@ cp -p $ORG1/keystore/*_sk ~/project/setup/composer/org1
 ```
 export ORG2=crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 
+rm  ~/project/setup/composer/org2/*_sk
+
 cp -p $ORG2/signcerts/A*.pem ~/project/setup/composer/org2
 
 cp -p $ORG2/keystore/*_sk ~/project/setup/composer/org2
 
 ```
+
+5. install business network
+
+5.1 create composer admin card for org1 
+```
+composer card create -p ~/project/setup/composer/org1/byfn-network-org1.json -u PeerAdmin -c ~/project/setup/composer/org1/Admin@org1.example.com-cert.pem -k ~/project/setup/composer/org1/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org1.card
+```
+5.2 create composer admin card for org2
+```
+composer card create -p ~/project/setup/composer/org2/byfn-network-org2.json -u PeerAdmin -c ~/project/setup/composer/org2/Admin@org2.example.com-cert.pem -k ~/project/setup/composer/org2/*_sk -r PeerAdmin -r ChannelAdmin -f PeerAdmin@byfn-network-org2.card
+```
+5.3 import the 2 admin card 
+```
+composer card import -f PeerAdmin@byfn-network-org1.card --card PeerAdmin@byfn-network-org1
+composer card import -f PeerAdmin@byfn-network-org2.card --card PeerAdmin@byfn-network-org2
+```
+5.4 install trade-network for org1
+```
+composer network install -c PeerAdmin@byfn-network-org1 -a trade-network.bna
+```
+5.4 install trade-network for org2
+```
+composer network install -c PeerAdmin@byfn-network-org2 -a trade-network.bna
+```
+5.5 create endorsement file
+Create an endorsement policy file called ~/project/setup/composer/endorsement-policy.json
+```
+vi ~/project/setup/composer/endorsement-policy.json
+```
+copy below part to the file
+```
+{
+    "identities": [
+        {
+            "role": {
+                "name": "member",
+                "mspId": "Org1MSP"
+            }
+        },
+        {
+            "role": {
+                "name": "member",
+                "mspId": "Org2MSP"
+            }
+        }
+    ],
+    "policy": {
+        "2-of": [
+            {
+                "signed-by": 0
+            },
+            {
+                "signed-by": 1
+            }
+        ]
+    }
+}
+```
+6. create paticipant for business network 
+6.1 request user Alice in org1 
+```
+composer identity request -c PeerAdmin@byfn-network-org1 -u admin -s adminpw -d alice
+```
+The -u admin and the -s adminpw options to this command correspond to the default user registered with the Hyperledger Fabric CA (Certificate Authority).
+
+The certficates will be placed into a directory called alice in the current working directory. There are three certificate files created, but only two are important. These are admin-pub.pem, the certificate (including the public key), and admin-priv.pem, the private key. Only the admin-pub.pem file is suitable for sharing with other organizations. The admin-priv.pem file must be kept secret as it can be used to sign transactions on behalf of the issuing organization.
+
+6.2 request user Bob in Org2
+```
+composer identity request -c PeerAdmin@byfn-network-org2 -u admin -s adminpw -d bob
+
+```
+
+7. start network 
+
+the version can be checked in package.json in bna zip file.
+```
+composer network start -c PeerAdmin@byfn-network-org1 -n trade-network -V 0.2.3-deploy.0 endorsementPolicyFile=~/project/setup/composer/endorsement-policy.json -A alice -C alice/admin-pub.pem -A bob -C bob/admin-pub.pem
+```
+
+8. create and import card for Org1:
+
+Add Alice (Admin)
+```
+composer card create -p ~/project/setup/composer/org1/byfn-network-org1.json -u alice -n trade-network -c alice/admin-pub.pem -k alice/admin-priv.pem
+
+composer card import -f alice@trade-network.card
+
+composer network ping -c alice@trade-network
+```
+
+add Joe Doe
+```
+composer participant add -c alice@trade-network -d '{"$class":"org.acme.trading.Trader","tradeId":"trader1-org1", "firstName":"Jo","lastName":"Doe"}'
+
+composer identity issue -c alice@trade-network -f jo.card -u jdoe -a "resource:org.acme.trading.Trader#trader1-org1"
+
+composer card import -f jo.card
+
+composer network ping -c jdoe@trade-network
+```
+9. create and import card for Org2:
+
+Add Bob (Admin)
+```
+composer card create -p  ~/project/setup/composer/org2/byfn-network-org2.json -u bob -n trade-network -c bob/admin-pub.pem -k bob/admin-priv.pem
+
+composer card import -f bob@trade-network.card
+
+composer network ping -c bob@trade-network
+```
+
+Add Dave Lowe (paticipant)
+
+```
+composer participant add -c bob@trade-network -d '{"$class":"org.acme.trading.Trader","tradeId":"trader2-org2", "firstName":"Dave","lastName":"Lowe"}'
+
+composer identity issue -c bob@trade-network -f dave.card -u dlowe -a "resource:org.acme.trading.Trader#trader2-org2"
+
+composer card import -f dave.card
+
+composer network ping -c dlowe@trade-network
+
+```
+
+
