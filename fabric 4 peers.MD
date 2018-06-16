@@ -328,11 +328,11 @@ CORE_PEER_ADDRESS=peer0.org1.example.com:7051
 
 peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
 ```
-
+ 
 **open VM** peer0/org2 , 
 set global variable
 
-```
+```   
 CHANNEL_NAME=ch1
 COUNTER=1
 MAX_RETRY=5
