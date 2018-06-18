@@ -60,11 +60,7 @@ if seeing below message
 ===================== All GOOD, End-2-End execution completed ===================== 
 
 
- _____   _   _   ____            _____   ____    _____ 
-| ____| | \ | | |  _ \          | ____| |___ \  | ____|
-|  _|   |  \| | | | | |  _____  |  _|     __) | |  _|  
-| |___  | |\  | | |_| | |_____| | |___   / __/  | |___ 
-|_____| |_| \_| |____/          |_____| |_____| |_____|
+
 
 
 you can shutdown and delete all setting by using 
@@ -175,7 +171,8 @@ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/c
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 CORE_PEER_ADDRESS=peer0.org1.example.com:7051
 
-'''
+```
+
 if use peer1.org1 , user below
 ```
 CORE_PEER_LOCALMSPID="Org1MSP"
@@ -183,7 +180,7 @@ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/c
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 CORE_PEER_ADDRESS=peer1.org1.example.com:7051
 
-'''
+```
 if use peer0.org2 , user below
 ```
 CORE_PEER_LOCALMSPID="Org2MSP"
@@ -191,7 +188,7 @@ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/c
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 CORE_PEER_ADDRESS=peer0.org2.example.com:7051
 
-'''
+```
 if use peer1.org2 , user below
 ```
 CORE_PEER_LOCALMSPID="Org2MSP"
@@ -199,7 +196,7 @@ CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/c
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 CORE_PEER_ADDRESS=peer1.org2.example.com:7051
 
-'''
+```
 ----------------
 
 8.2 test orderer connection
