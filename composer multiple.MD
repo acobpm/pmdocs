@@ -315,10 +315,11 @@ composer network ping -c alice@promise04
 add user mason
 
 ```
-composer participant add -c alice@promise04 -d '{"$class":"com.acob.promiseme.Couple","partner":"resource:com.acob.promiseme.Couple#2625", "personId":"Mason","firstName":"Mason","lastName":"Zhao","gender":"M","totalLove":0,"balance":0}'
+composer participant add -c alice@promise04 -d '{"$class":"com.acob.promiseme.Couple","partner":"resource:com.acob.promiseme.Couple#2625","partnerNickName":"", "personId":"Mason","firstName":"Mason","lastName":"Zhao","gender":"M","totalLove":0,"balance":0}'
 
-composer identity issue -c alice@trade-network -f jo.card -u jdoe -a "resource:org.acme.trading.Trader#trader1-org1"
+composer identity issue -c alice@promise04 -f mason.card -u mason -a "resource:com.acob.promiseme.Couple#Mason"
 
-composer card import -f jo.card
+composer card import -f mason.card
 
-composer network ping -c jdoe@trade-network```
+composer network ping -c mason@promise04
+```
