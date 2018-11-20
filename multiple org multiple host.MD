@@ -11,7 +11,8 @@ cd fabric-samples
 ```
 1.2 Download the platform binaries, including cryptogen :
 ```
-curl -sSL https://goo.gl/6wtTN5 | bash -s 1.1.0
+curl -sSL http://bit.ly/2ysbOFE | bash -s 1.3.0
+
 ```
 1.3 change directory into first-network sample 
 ```
