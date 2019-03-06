@@ -162,7 +162,7 @@ npm run build
 * check logs in file 
 logs/console/console.log-* file
 
-7. see in web page
+7. see in web page, the port looks cannot be changed in config file
 ```
 http://localhost:8080
 ```
